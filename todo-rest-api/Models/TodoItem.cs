@@ -1,5 +1,4 @@
-﻿using System;
-namespace todo_rest_api.Models
+﻿namespace todo_rest_api.Models
 {
     public class TodoItem
     {
