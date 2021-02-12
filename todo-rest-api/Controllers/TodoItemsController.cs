@@ -20,9 +20,11 @@ namespace todo_rest_api.Controllers
 
         // GET: api/TodoItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<TodoItemDto>>> GetTodoItems()
         {
-            return await _context.TodoItems.ToListAsync();
+            return await _context.TodoItems
+                .Select(x => ItemToDto(x))
+                .ToListAsync();
         }
 
         // GET: api/TodoItems/5
@@ -78,7 +80,7 @@ namespace todo_rest_api.Controllers
             _context.TodoItems.Add(todoItem);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
         }
 
         // DELETE: api/TodoItems/5
@@ -101,5 +103,13 @@ namespace todo_rest_api.Controllers
         {
             return _context.TodoItems.Any(e => e.Id == id);
         }
+
+        private static TodoItemDto ItemToDto(TodoItem item) =>
+            new TodoItemDto
+            {
+                Id = item.Id,
+                Name = item.Name,
+                IsComplete = item.IsComplete
+            };
     }
 }
