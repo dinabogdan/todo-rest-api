@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using todo_rest_api.Models;
 
 namespace todo_rest_api
 {
@@ -20,11 +22,8 @@ namespace todo_rest_api
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddDbContext<TodoContext>(options => options.UseInMemoryDatabase("TodoList"));
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "todo_rest_api", Version = "v1" });
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,8 +32,6 @@ namespace todo_rest_api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "todo_rest_api v1"));
             }
 
             app.UseHttpsRedirection();
